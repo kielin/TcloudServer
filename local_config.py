@@ -4,7 +4,9 @@ TCLOUD_ENV = 'dev'
 SERVER_ENV = 'dev'
 
 # SQL 连接字符串
-SQLALCHEMY_DATABASE_URI = 'mysql://<username>:<password>@<host>:<port>/<db>?charset=utf8'
+# SQLALCHEMY_DATABASE_URI = 'mysql://<username>:<password>@<host>:<port>/<db>?charset=utf8'
+# SQLALCHEMY_DATABASE_URI = 'mysql://root:Ypproot@192.168.11.55:3306/demo?charset=utf8'
+SQLALCHEMY_DATABASE_URI = 'mysql://root:Ypproot@localhost:3306/demo?charset=utf8'
 
 # 密钥相关
 SECRET = '####'

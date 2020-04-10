@@ -5,6 +5,8 @@ import time
 
 import jwt
 import requests
+from urllib import parse
+from bs4 import BeautifulSoup
 from flask import current_app
 
 from apps.auth.business.track import TrackUserBusiness
@@ -34,6 +36,74 @@ class AuthBusiness(object):
             Ability.name.label('abilityname'),
             Ability.handler.label('abilityhandler')
         )
+
+    # @classmethod
+    # def ssoLogin(cls):
+    #     data='jiangyeun'
+    #     return 0,data
+
+    @classmethod
+    def ssoLogin(cls,username, password):
+        url = 'https://sso.yupaopao.com/v1/tickets'
+        service = 'http://192.168.11.55:8080'
+        tgtHtml = cls.getTGT(username,password,service)
+        tgturl = BeautifulSoup(tgtHtml.content, 'lxml').select("body > form")[0].attrs['action']
+        print(tgturl)
+        ticket= cls.getTicket(tgturl,service).content
+        if(ticket):
+            usernameContent = cls.getUserName(ticket,service)
+            username = BeautifulSoup(usernameContent.content,'lxml').find("cas:user").string
+        # token = cls.jwt_b_encode(username).decode('utf-8')
+        result = {
+            "userid": 1,
+            "username":username,
+            "nickname": username,
+            "role": [{"id": 1, "name": username, "comment": "超级管理员"}],
+            "projectid":[],
+            "picture": "",
+            "userweight": 1
+
+        }
+        data = dict(token=result)
+
+        return 0, data
+
+    @classmethod
+    def getTGT(self,username,password,service):
+        url = 'https://sso.yupaopao.com/v1/tickets'
+        datas = {
+            "username": username,
+            "password": password,
+            "service": service
+        }
+        header = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
+        data = parse.urlencode(datas)
+        return requests.post(url=url, data=data, headers=header)
+
+    # return ticket like ST-10539-21eQYrRSCvUVGLdljTwWsGUD2Aksso-64647f568f-kwbjl
+    @classmethod
+    def getTicket(self,tgtUrl,service):
+        # url = 'https://sso.yupaopao.com/v1/tickets'
+        datas = {
+            "service": service
+        }
+        header = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
+        data = parse.urlencode(datas)
+        return requests.post(url=tgtUrl, data=data, headers=header)
+
+    @classmethod
+    def getUserName(self,ticket,service):
+        url = 'https://sso.yupaopao.com/serviceValidate'
+        datas = {
+            "ticket": ticket,
+            "service": service
+        }
+        # header = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
+        # data = parse.urlencode(datas)
+        return requests.get(url=url, params=datas)
+
+
+
 
     @classmethod
     def login(cls, username, password):

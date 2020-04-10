@@ -290,7 +290,8 @@ def login_handler():
     username, passwd = parse_json_form('login')
     if passwd is '':
         return json_detail_render(301)
-    code, data = AuthBusiness.login(username, passwd)
+    # code, data = AuthBusiness.login(username, passwd)
+    code, data = AuthBusiness.ssoLogin(username,passwd)
 
     return json_detail_render(code, data)
 

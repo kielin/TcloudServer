@@ -4,6 +4,7 @@ flask-sqlalchemy
 flask-marshmallow
 flask-script
 flask-cors==3.0.2
+flask-cas
 gunicorn
 ipython
 pymysql
@@ -20,8 +21,8 @@ urllib3
 flask-apscheduler
 python-jenkins
 flask-login
-mysqlclient
-pandas==0.24.2
+mysqlclient==1.4.1
+pandas==1.0.3
 jira
 tornado
 ujson

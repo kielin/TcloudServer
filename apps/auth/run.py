@@ -16,6 +16,7 @@ from apps.auth.views.wxlogin import wxlogin
 from library.api.tFlask import tflask
 
 
+
 def create_app():
     app = tflask(config)
     register_blueprints(app)

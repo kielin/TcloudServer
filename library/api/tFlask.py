@@ -5,6 +5,8 @@ from library.api.db import db
 from library.api.parse import format_response
 from library.api.tMiddleware import t_middleware
 from library.tlogger import logger_create
+from flask_cas import CAS
+
 
 try:
     from public_config import SERVER_ENV
@@ -70,10 +72,14 @@ def register_extensions(app):
 
 
 def tflask(config):
+    cas = CAS()
     app = TFlask(config.SERVICE_NAME)
     # 只为注入mysql链接，使用config中内容没有使用current_app.config
     app.config.from_object(config)
     t_middleware(app)
     register_logger(app, config)
     register_extensions(app)
+    cas.init_app(app)
+    app.config['CAS_SERVER'] = 'https://sso.yupaopao.com'
+    app.config['CAS_AFTER_LOGIN'] = 'index'
     return app
